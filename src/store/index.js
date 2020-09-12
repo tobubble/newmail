@@ -3,13 +3,18 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import actions from './actions'
+import mutations from './mutations'
+import getters from './getters'
+
 export default new Vuex.Store({
   state: {
+    shopCart: [],
   },
-  mutations: {
-  },
-  actions: {
-  },
+  mutations,
+  actions,
+  getters,
   modules: {
-  }
+  },
+  strict: true
 })
