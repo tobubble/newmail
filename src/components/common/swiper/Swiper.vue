@@ -2,9 +2,10 @@
   <div class="swiper">
     <swiper :options="swiperOption" v-if="swiperImg.length>0">
       <swiper-slide v-for="(item, index) in swiperImg" :key="index">
-        <a :href="item.link">
+        <a v-if="isLinkShow" :href="item.link">
           <img :src="item.image || item" alt />
         </a>
+        <img v-else :src="item.image || item" alt />
       </swiper-slide>
       <div class="swiper-pagination" slot="pagination" v-show="isPaginationShow"></div>
     </swiper>
@@ -28,6 +29,10 @@ export default {
     isPaginationShow: {
       type: Boolean,
       default: true
+    },
+    isLinkShow: {
+      type: Boolean,
+      default: false
     }
   },
 

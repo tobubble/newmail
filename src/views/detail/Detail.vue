@@ -1,11 +1,11 @@
 <template>
   <div class="detail">
-    <!-- <nav-bar @backClick="backClick" ref="navbar"></nav-bar> -->
     <nav-bar @backClick="backClick" :currentIndex="currentIndex" @itemClick="itemClick"></nav-bar>
     <scroll ref="scroll">
       <swiper
         class="detailSwiper"
         :swiperImg="goodInfo.topImg"
+        :isLinkShow="false"
         v-if="Object.keys(goodInfo).length > 0"
       ></swiper>
       <good-desc ref="goodDesc" :goodInfo="goodInfo"></good-desc>
@@ -15,7 +15,7 @@
       <recommend ref="recommend" :recommend="recommend" />
       <recommend-img ref="recommendImg" :goodList="recommendImg" @imgLoad="imgLoad"></recommend-img>
     </scroll>
-    <back-top :isBackShow="isBackShow" @click.native="backtop"></back-top>
+    <back-top @click.native="goBack" :isBackShow="isBackShow"></back-top>
     <buy-option @addCart="addCart"></buy-option>
   </div>
 </template>
@@ -51,6 +51,8 @@ import { recommend2 } from "network/recommend";
 
 // import
 
+import {backTop} from 'common/mixin'
+
 export default {
   name: "detail",
   components: {
@@ -66,6 +68,7 @@ export default {
     BackTop,
     BuyOption,
   },
+  mixins: [backTop],
   data() {
     return {
       iid: null,
@@ -75,7 +78,6 @@ export default {
       GoodsParam: {}, // 保存商品的参数信息
       recommend: {}, //保留推荐信息
       recommendImg: [],
-      isBackShow: false,
       currentIndex: 0,
       cpnPosition: [],
       GetPosition: null,
@@ -86,13 +88,11 @@ export default {
     this.iid = this.$route.query.iid;
 
     getDetail(this.iid).then((res) => {
-      // console.log(res)
       const columns = res.result.columns;
       const detailInfo = res.result.detailInfo;
       const itemInfo = res.result.itemInfo;
       const shopInfo = res.result.shopInfo;
       this.goodInfo = new goodInfo(columns, detailInfo, itemInfo, shopInfo);
-      // console.log(this.goodInfo)
       this.shopInfo = new Shop(shopInfo, itemInfo);
       this.showImg = res.result.detailInfo.detailImage[0].list;
       this.GoodsParam = new GoodsParam(
@@ -142,18 +142,11 @@ export default {
       this.$store.dispatch('addCart', goods).then(res => {
         this.$toast.show(res, 3000)
       })
-      // this.$store.state.shopCart[0].count++
-      // this.$store.dispatch('addToCart', product)
     },
   },
 
   mounted() {
     this.$refs.scroll.scroll.on("scroll", (position) => {
-      if (-position.y >= 500) {
-        this.isBackShow = true;
-      } else {
-        this.isBackShow = false;
-      }
       if (-position.y >= 0 && -position.y <= this.cpnPosition[1]) {
         this.currentIndex = 0;
       } else if (

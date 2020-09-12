@@ -10,7 +10,7 @@
       <good-category ref="goodCategory" @itemClick="itemClick"></good-category>
       <good-list @imgLoad="imgload" :goodList="goodList[currentType]" @getIid="getIid"></good-list>
     </scroll>
-    <back-top @click.native="backClick" :isBackShow="isBackShow"></back-top>
+    <back-top @click.native="goBack" :isBackShow="isBackShow"></back-top>
     <good-category ref="goodCategory2" @itemClick="itemClick" :isFixed="true" :isShow="isShow"></good-category>
   </div>
 </template>
@@ -31,6 +31,8 @@ import { multiData } from "network/home.js";
 import { goodList } from "network/home.js";
 // 公共方法（工具）的导入
 import { debounce } from "common/utils";
+// 导入混入
+import {backTop} from 'common/mixin'
 
 export default {
   components: {
@@ -43,6 +45,9 @@ export default {
     Scroll,
     BackTop,
   },
+
+  mixins: [backTop],
+
   data() {
     return {
       swiperImg: [], // 保存轮播图的数据
@@ -56,7 +61,6 @@ export default {
       refresh: null,
       finishPullUp: null,
       isShow: false,
-      isBackShow: false,
     };
   },
 
@@ -89,12 +93,6 @@ export default {
       } else {
         this.isShow = false;
       }
-
-      if (-position.y >= 500) {
-        this.isBackShow = true;
-      } else {
-        this.isBackShow = false;
-      }
     });
   },
   methods: {
@@ -110,7 +108,6 @@ export default {
         res.data.recommend.list.forEach((item) => {
           this.recommend.push(item);
         });
-        console.log(this.recommend);
       });
     },
     getGoodList(type) {
@@ -138,9 +135,9 @@ export default {
       // 使用节流函数来刷新
       this.refresh();
     },
-    backClick() {
-      this.$refs.scroll.scroll.scrollTo(0, 0, 300);
-    },
+    // backClick() {
+    //   this.$refs.scroll.scroll.scrollTo(0, 0, 300);
+    // },
     getIid(iid) {
       this.$router.push({
         path: '/detail/',

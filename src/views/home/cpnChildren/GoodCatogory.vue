@@ -51,7 +51,7 @@
   padding: 10px 0 0;
 
   .category-item {
-    width: 32px;
+    width: 60px;
     height: 28px;
     text-align: center;
     border-bottom: none;

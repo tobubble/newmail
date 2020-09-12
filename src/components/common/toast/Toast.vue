@@ -15,7 +15,6 @@
     },
     methods: {
       show(message, delay) {
-        console.log('电泳了')
         this.message = message
         this.isShow = true
         clearTimeout(this.timer)
